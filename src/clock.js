@@ -44,18 +44,18 @@ export function createClock(container, config) {
     svg.appendChild(marker);
   }
 
-  // Center dot
-  const centerDot = createCircle(CENTER, CENTER, 3, "#1e293b", "none", 0);
+  // Clock hands — each wrapped in a <g> for rotation around center
+  const hourGroup = createHandGroup(40, 3.5, "#1e293b");
+  const minuteGroup = createHandGroup(60, 2.5, "#475569");
+  const secondGroup = createHandGroup(70, 1, "#ef4444");
+
+  svg.appendChild(hourGroup.g);
+  svg.appendChild(minuteGroup.g);
+  svg.appendChild(secondGroup.g);
+
+  // Center dot (on top of hands)
+  const centerDot = createCircle(CENTER, CENTER, 4, "#1e293b", "none", 0);
   svg.appendChild(centerDot);
-
-  // Clock hands
-  const hourHand = createHand(40, 3.5, "#1e293b", "0.5s");
-  const minuteHand = createHand(60, 2.5, "#475569", "0.3s");
-  const secondHand = createHand(70, 1, "#ef4444", "0.15s");
-
-  svg.appendChild(hourHand);
-  svg.appendChild(minuteHand);
-  svg.appendChild(secondHand);
 
   wrapper.appendChild(svg);
 
@@ -81,9 +81,9 @@ export function createClock(container, config) {
     const minuteAngle = (time.minutes + time.seconds / 60) * 6;
     const secondAngle = time.seconds * 6;
 
-    hourHand.setAttribute("transform", `rotate(${hourAngle}, ${CENTER}, ${CENTER})`);
-    minuteHand.setAttribute("transform", `rotate(${minuteAngle}, ${CENTER}, ${CENTER})`);
-    secondHand.setAttribute("transform", `rotate(${secondAngle}, ${CENTER}, ${CENTER})`);
+    hourGroup.g.setAttribute("transform", `rotate(${hourAngle}, ${CENTER}, ${CENTER})`);
+    minuteGroup.g.setAttribute("transform", `rotate(${minuteAngle}, ${CENTER}, ${CENTER})`);
+    secondGroup.g.setAttribute("transform", `rotate(${secondAngle}, ${CENTER}, ${CENTER})`);
 
     if (abbreviation !== undefined) {
       tzAbbr.textContent = abbreviation;
@@ -116,10 +116,9 @@ function createLine(x1, y1, x2, y2, stroke, strokeWidth) {
   return line;
 }
 
-function createHand(length, width, color, transitionDuration = "0.3s") {
+function createHandGroup(length, width, color) {
+  const g = document.createElementNS(SVG_NS, "g");
   const line = createLine(CENTER, CENTER, CENTER, CENTER - length, color, width);
-  line.setAttribute("stroke-linecap", "round");
-  line.style.transition = `transform ${transitionDuration} ease`;
-  line.style.transformOrigin = `${CENTER}px ${CENTER}px`;
-  return line;
+  g.appendChild(line);
+  return { g, line };
 }

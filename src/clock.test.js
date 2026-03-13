@@ -19,39 +19,44 @@ describe("createClock", () => {
     expect(svg.namespaceURI).toBe("http://www.w3.org/2000/svg");
   });
 
-  it("SVG contains hour, minute, and second hand elements (3 lines inside SVG after markers)", () => {
+  it("SVG contains three hand groups", () => {
     createClock(container, config);
     const svg = container.querySelector("svg");
-    const lines = svg.querySelectorAll("line");
-    // 12 hour markers + 3 hands = 15 lines
-    expect(lines.length).toBe(15);
+    const groups = svg.querySelectorAll("g");
+    expect(groups.length).toBe(3);
   });
 
-  it("has three clock hand lines with distinct widths", () => {
+  it("each hand group contains a line element", () => {
     createClock(container, config);
     const svg = container.querySelector("svg");
-    const lines = Array.from(svg.querySelectorAll("line"));
-    // Last 3 lines are the hands
-    const hands = lines.slice(-3);
-    const widths = hands.map((l) => l.getAttribute("stroke-width"));
+    const groups = svg.querySelectorAll("g");
+    groups.forEach((g) => {
+      expect(g.querySelector("line")).not.toBeNull();
+    });
+  });
+
+  it("hand lines have distinct stroke widths", () => {
+    createClock(container, config);
+    const svg = container.querySelector("svg");
+    const groups = Array.from(svg.querySelectorAll("g"));
+    const widths = groups.map((g) => g.querySelector("line").getAttribute("stroke-width"));
     // hour=3.5, minute=2.5, second=1
     expect(widths).toEqual(["3.5", "2.5", "1"]);
   });
 
-  it("update() rotates hands to correct angles for 3:15:45", () => {
+  it("update() rotates hand groups to correct angles for 3:15:45", () => {
     const clock = createClock(container, config);
     clock.update({ hours: 3, minutes: 15, seconds: 45 });
 
     const svg = container.querySelector("svg");
-    const lines = Array.from(svg.querySelectorAll("line"));
-    const hands = lines.slice(-3);
+    const groups = Array.from(svg.querySelectorAll("g"));
 
     // Hour: (3 + 15/60) * 30 = 97.5
-    expect(hands[0].getAttribute("transform")).toContain("97.5");
+    expect(groups[0].getAttribute("transform")).toContain("97.5");
     // Minute: (15 + 45/60) * 6 = 94.5
-    expect(hands[1].getAttribute("transform")).toContain("94.5");
+    expect(groups[1].getAttribute("transform")).toContain("94.5");
     // Second: 45 * 6 = 270
-    expect(hands[2].getAttribute("transform")).toContain("270");
+    expect(groups[2].getAttribute("transform")).toContain("270");
   });
 
   it("renders city name label below the clock", () => {
@@ -68,26 +73,16 @@ describe("createClock", () => {
     expect(tzEl.textContent).toBe("EST");
   });
 
-  it("clock hands have CSS transition for smooth animation", () => {
-    createClock(container, config);
-    const svg = container.querySelector("svg");
-    const hands = Array.from(svg.querySelectorAll("line")).slice(-3);
-    hands.forEach((hand) => {
-      expect(hand.style.transition).toContain("transform");
-      expect(hand.style.transition).toContain("ease");
-    });
-  });
-
-  it("second hand position changes between updates", () => {
+  it("second hand group rotation changes between updates", () => {
     const clock = createClock(container, config);
     clock.update({ hours: 12, minutes: 0, seconds: 0 });
 
     const svg = container.querySelector("svg");
-    const secondHand = Array.from(svg.querySelectorAll("line")).slice(-1)[0];
-    const firstTransform = secondHand.getAttribute("transform");
+    const secondGroup = Array.from(svg.querySelectorAll("g"))[2];
+    const firstTransform = secondGroup.getAttribute("transform");
 
     clock.update({ hours: 12, minutes: 0, seconds: 30 });
-    const secondTransform = secondHand.getAttribute("transform");
+    const secondTransform = secondGroup.getAttribute("transform");
 
     expect(firstTransform).not.toBe(secondTransform);
   });

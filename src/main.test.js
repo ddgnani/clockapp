@@ -43,8 +43,8 @@ describe("main app integration", () => {
 
     const svgs = document.querySelectorAll("svg");
     const getSecondHandTransform = (svg) => {
-      const lines = Array.from(svg.querySelectorAll("line"));
-      return lines[lines.length - 1].getAttribute("transform");
+      const groups = Array.from(svg.querySelectorAll("g"));
+      return groups[groups.length - 1].getAttribute("transform");
     };
 
     const initialTransforms = Array.from(svgs).map(getSecondHandTransform);

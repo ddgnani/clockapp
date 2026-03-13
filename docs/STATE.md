@@ -30,8 +30,8 @@
 
 | Unit | Name | Status |
 |------|------|--------|
-| 1 | Project Scaffolding & Build Setup | in-progress (parallel) |
-| 2 | Timezone Utility Module | in-progress (parallel) |
+| 1 | Project Scaffolding & Build Setup | complete |
+| 2 | Timezone Utility Module | complete |
 | 3 | SVG Analog Clock Component | pending |
 | 4 | Main App — Layout, Wiring & Deploy | pending |
 

@@ -22,7 +22,7 @@
 | Flag | Value | Set During |
 |------|-------|------------|
 | `has_ui` | `true` | Phase 3 (updated after architecture is complete) |
-| `subagent_mode` | `sequential` | Phase 5 (updated to `parallel` if user opts in) |
+| `subagent_mode` | `parallel` | Phase 5 (updated to `parallel` if user opts in) |
 
 ---
 
@@ -30,8 +30,8 @@
 
 | Unit | Name | Status |
 |------|------|--------|
-| 1 | Project Scaffolding & Build Setup | pending |
-| 2 | Timezone Utility Module | pending |
+| 1 | Project Scaffolding & Build Setup | in-progress (parallel) |
+| 2 | Timezone Utility Module | in-progress (parallel) |
 | 3 | SVG Analog Clock Component | pending |
 | 4 | Main App — Layout, Wiring & Deploy | pending |
 
